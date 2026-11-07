@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scandinavia Trivia</title>
+
+    <style>
+        body {
+            background-color: rgb(106, 129, 151);
+            font-family: 'Times New Roman';
+            margin: 0;
+        }
+
+        /* START SCREEN */
+
+        #startScreen {
+            display: block;
+        }
+
+        #startButton {
+            position: absolute;
+            top: 9%;
+            left: 29%;
+            width: 42%;
+            height: 100px;
+            background-color: black;
+            color: white;
+            font-size: 55px;
+            cursor: pointer;
+            font-family: 'Times New Roman';
+        }
+
+        /* GAME SCREEN */
+
+        #gameScreen {
+            display: none;
+            min-height: 100vh;
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        #scoreboard {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: black;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            border: 2px solid white;
+            font-family: 'Times New Roman';
+        }
+
+        /* COLORED MAP AT TOP */
+
+        #mapImage {
+            display: none;
+            width: 450px;
+            max-width: 80%;
+            height: 300px;
+            object-fit: contain;
+            margin: 35px auto 10px auto;
+        }
+
+        /* QUESTION */
+
+        #randomBox {
+            width: 60%;
+            min-height: 90px;
+            margin: 100px auto 20px auto;
+            background-color: black;
+            color: white;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+            font-family: 'Times New Roman',;
+        }
+
+        /* ANSWERS */
+
+        #answers {
+            width: 40%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-family: 'Times New Roman';
+        }
+
+        #answers button {
+            padding: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            border: 2px solid black;
+            background-color: white;
+            font-family: 'Times New Roman';
+        }
+
+        #answers button:disabled {
+            cursor: default;
+        }
+
+        #feedback {
+            margin: 20px auto;
+            color: white;
+            font-size: 25px;
+            font-family: 'Times New Roman';
+        }
+
+        #nextButton {
+            width: 20%;
+            padding: 15px;
+            font-size: 20px;
+            display: none;
+            cursor: pointer;
+            margin: 10px auto;
+            font-family: 'Times New Roman';
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- START SCREEN -->
+
+    <div id="startScreen">
+
+        <button id="startButton" onclick="startGame()">
+            Start
+        </button>
+
+    </div>
+
+
+    <!-- GAME SCREEN -->
+
+    <div id="gameScreen">
+
+        <div id="scoreboard">Score: 0 / 10</div>
+
+        <!-- ONLY THE COLORED MAP -->
+
+        <img id="mapImage" src="europe.png"
+             alt="Five colored countries">
+
+        <div id="randomBox">Scandinavia Trivia</div>
+
+        <div id="answers"></div>
+
+        <div id="feedback"></div>
+
+        <button id="nextButton" onclick="nextQuestion()">
+            Next Question
+        </button>
+
+    </div>
+
+
+    <script>
+
+        let questions = [
+
+            {
+                question: "What is the capital of Norway?",
+                options: ["Stockholm", "Oslo", "Helsinki", "Copenhagen"],
+                answer: "Oslo"
+            },
+            {
+                question: "What is the capital of Finland?",
+                options: ["Reykjavik", "Oslo", "Helsinki", "Stockholm"],
+                answer: "Helsinki"
+            },
+            {
+                question: "What is the capital of Iceland?",
+                options: ["Copenhagen", "Reykjavik", "Oslo", "Helsinki"],
+                answer: "Reykjavik"
+            },
+            {
+                question: "What is the capital of Sweden?",
+                options: ["Stockholm", "Oslo", "Copenhagen", "Helsinki"],
+                answer: "Stockholm"
+            },
+            {
+                question: "What is the capital of Denmark?",
+                options: ["Helsinki", "Reykjavik", "Copenhagen", "Stockholm"],
+                answer: "Copenhagen"
+            },
+            {
+                question: "What is the name of the green country?",
+                options: ["Norway", "Finland", "Sweden", "Denmark"],
+                answer: "Finland",
+                map: true
+            },
+            {
+                question: "What is the name of the red country?",
+                options: ["Norway", "Iceland", "Finland", "Sweden"],
+                answer: "Norway",
+                map: true
+            },
+            {
+                question: "What is the name of the blue country?",
+                options: ["Denmark", "Sweden", "Norway", "Iceland"],
+                answer: "Sweden",
+                map: true
+            },
+            {
+                question: "What is the name of the yellow country?",
+                options: ["Finland", "Norway", "Denmark", "Iceland"],
+                answer: "Denmark",
+                map: true
+            },
+            {
+                question: "What is the name of the purple country?",
+                options: ["Sweden", "Iceland", "Denmark", "Finland"],
+                answer: "Iceland",
+                map: true
+            }
+
+        ];
+
+        questions.sort(() => Math.random() - 0.5);
+
+        let score = 0;
+        let currentQuestion = 0;
+
+        function startGame() {
+
+            document.getElementById("startScreen").style.display = "none";
+
+            document.getElementById("gameScreen").style.display = "block";
+
+            showQuestion();
+
+        }
+
+        function showQuestion() {
+
+            let question = questions[currentQuestion];
+
+            document.getElementById("randomBox").textContent =
+                question.question;
+
+            document.getElementById("feedback").textContent = "";
+
+            document.getElementById("nextButton").style.display = "none";
+
+            let map = document.getElementById("mapImage");
+
+            map.style.display = question.map ? "block" : "none";
+
+            if (question.map) {
+                document.getElementById("randomBox").style.marginTop = "10px";
+            } else {
+                document.getElementById("randomBox").style.marginTop = "100px";
+            }
+
+            let answersDiv = document.getElementById("answers");
+
+            answersDiv.innerHTML = "";
+
+            let shuffledOptions = [...question.options];
+
+            shuffledOptions.sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach(option => {
+
+                let button = document.createElement("button");
+
+                button.textContent = option;
+
+                button.onclick = function() {
+                    checkAnswer(option, button);
+                };
+
+                answersDiv.appendChild(button);
+
+            });
+
+        }
+
+        function checkAnswer(choice, selectedButton) {
+
+            let question = questions[currentQuestion];
+
+            let buttons = document.querySelectorAll("#answers button");
+
+            buttons.forEach(button => {
+
+                button.disabled = true;
+
+                if (button.textContent === question.answer) {
+                    button.style.backgroundColor = "lightgreen";
+                }
+
+            });
+
+            if (choice === question.answer) {
+
+                score++;
+
+            } else {
+
+                selectedButton.style.backgroundColor = "red";
+
+            }
+
+            document.getElementById("scoreboard").textContent =
+                "Score: " + score + " / " + questions.length;
+
+            if (currentQuestion === questions.length - 1) {
+
+                document.getElementById("nextButton").textContent =
+                    "See Results";
+
+            } else {
+
+                document.getElementById("nextButton").textContent =
+                    "Next Question";
+
+            }
+
+            document.getElementById("nextButton").style.display = "block";
+
+        }
+
+        function nextQuestion() {
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+
+                showQuestion();
+
+            } else {
+
+                showResults();
+
+            }
+
+        }
+
+        function showResults() {
+
+            document.getElementById("randomBox").textContent =
+                "Game Complete!";
+
+            document.getElementById("answers").innerHTML = "";
+
+            document.getElementById("mapImage").style.display = "none";
+
+            document.getElementById("feedback").textContent =
+                "You got " + score + " out of " +
+                questions.length + " correct!";
+
+            document.getElementById("nextButton").style.display = "none";
+
+        }
+
+    </script>
+
+</body>
+</html>
